@@ -17,6 +17,7 @@ public class Main {
 	private JFrame frame;
 	private JFileChooser explorador;
 	private File archivo;
+	private String parent_name;
 
 	/**
 	 * Launch the application.
@@ -59,7 +60,7 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				String ruta = readfile();
-				new Read_Data().read(ruta);
+				new Read_Data().read(ruta,parent_name);
 			}
 		});
 		Start_bt.setBounds(117, 41, 97, 25);
@@ -74,10 +75,9 @@ public String readfile() {
 		switch(seleccion) {
 		case JFileChooser.APPROVE_OPTION:
 			archivo = explorador.getSelectedFile();
-			//file_name=archivo.getName();
-			//file_name = file_name.replaceAll(".log", "_ParseLog.txt");
+			parent_name=archivo.getParent();
 			ruta = archivo.getPath();
-			System.out.println(ruta);
+			System.out.println(parent_name);
 		 //seleccionó abrir
 		 break;
 
