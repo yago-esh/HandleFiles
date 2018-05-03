@@ -75,15 +75,17 @@ public class Main {
 				
 				Read_Data data = new Read_Data(Main.this);
 				String ruta = readfile();
-				data.countLines(ruta);
-				data.read(ruta,parent_name);
-				Start_bt.setEnabled(false);
+				if(ruta!=null) {
+					data.countLines(ruta);
+					data.read(ruta,parent_name);
+					Start_bt.setEnabled(false);
+				}
 			}
 		});
 		Start_bt.setBounds(75, 11, 150, 50);
 		frame.getContentPane().add(Start_bt);
 		
-		JLabel lblNewLabel = new JLabel("Versi\u00F3n DEV");
+		JLabel lblNewLabel = new JLabel("Versi\u00F3n 1.0.5");
 		lblNewLabel.setBounds(12, 74, 100, 16);
 		frame.getContentPane().add(lblNewLabel);
 		
