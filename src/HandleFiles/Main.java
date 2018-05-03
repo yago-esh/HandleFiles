@@ -59,7 +59,7 @@ public class Main {
 	 */
 	private void initialize() {
 		
-		explorador = new JFileChooser("");
+		explorador = new JFileChooser("\\\\FONETIC-vdf\\locuciones\\Edit");
 		explorador.setDialogTitle("Abrir documento...");
 		explorador.setFileFilter(new FileNameExtensionFilter("TXT", "txt"));
 		frame = new JFrame();
@@ -85,7 +85,7 @@ public class Main {
 		Start_bt.setBounds(75, 11, 150, 50);
 		frame.getContentPane().add(Start_bt);
 		
-		JLabel lblNewLabel = new JLabel("Versi\u00F3n 1.0.5");
+		JLabel lblNewLabel = new JLabel("Versi\u00F3n 1.0.6");
 		lblNewLabel.setBounds(12, 74, 100, 16);
 		frame.getContentPane().add(lblNewLabel);
 		
