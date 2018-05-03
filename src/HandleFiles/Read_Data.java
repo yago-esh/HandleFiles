@@ -6,54 +6,96 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.regex.Pattern;
 
-public class Read_Data {
+import javax.swing.JOptionPane;
+
+public class Read_Data{
 	
 	private File archivo = null;
 	private FileReader fr = null;
 	private BufferedReader br = null;
-	private FileWriter fichero = null;
-	private PrintWriter pw = null;
-	private String ruta, parent;
-	private int size;
+	private int copiados, existentes, lines;
 	private File name1;
-	private File name2;
+	private Main main;
 	
-	public Read_Data() {
+	public Read_Data(Main main) {
+		this.main=main;
+		lines=0;
 	}
 	
+	
+	
 	public void read(String ruta, String parent) {
-		this.ruta=ruta;
-		this.parent=parent;
+		Thread t1 = new Thread(new Runnable() {
+	         public void run() {
+	     		copiados=0;
+	     		existentes=0;
+	     		
+	     		try {
+	     	        archivo = new File (ruta);
+	     	        fr = new FileReader (archivo);
+	     	        br = new BufferedReader(fr);
+	     	        int x=0;
+	     	        String linea;
+	     	        while((linea=br.readLine())!=null) {
+	     	        	String[] parts = linea.split("	");
+	     	        	System.out.println("NOMBRE DEL AUDIO:   "+parts[0]);
+	     	        	System.out.println("ARCHIVO ORIGEN:     "+parts[1]);
+	     	        	if (findFile(parts[1]+".wav",new File(parent))) {
+	     	        		File dest = new File(name1.getParent()+"\\"+parts[0]+".wav");
+	     	        		System.out.println("ARCHIVO ENCONTRADO: " +name1);
+	     	        		if(!dest.exists()) {
+	     	        			copyFileUsingFileStreams(name1,dest);
+	     	        			copiados++;
+	     	        		}
+	     	        		else {
+	     	        			existentes++;
+	     	        		}
+	     	        	};
+	     	        	System.out.println("--------------------------------------------------------------");
+	     	        	
+	     	        	float percent = (float)Math.floor(x * 100f / lines);
+	     	        	main.changebtn(percent);
+
+	     	           x++;   
+	     	        }
+	     	       main.changebtn((float) 100);
+	     	       main.activateBtn();
+	     	        JOptionPane.showMessageDialog(null,"Numero de archivos copiados: " +copiados+ "\n"+ "Número de archivos ya existentes: " + existentes);
+	     	        
+	     	      }
+	     	      catch(FileNotFoundException e){
+	     	    	  System.out.println("ARCHIVO NO ENCONTRADO");
+	     	      } catch (IOException e) {
+	     			e.printStackTrace();
+	     		}finally{
+	     	         try{                    
+	     	            if( null != fr ){   
+	     	               fr.close();     
+	     	            }                  
+	     	         }catch (Exception e2){ 
+	     	            e2.printStackTrace();
+	     	         }
+	     	      }
+	         }
+	    });  
+	    t1.start();
+		
+	}
+	
+	public void countLines(String ruta) {
 		try {
 	        archivo = new File (ruta);
 	        fr = new FileReader (archivo);
 	        br = new BufferedReader(fr);
 
-	        String linea;
-	        while((linea=br.readLine())!=null) {
-	        	String[] parts = linea.split("	");
-	        	System.out.println("PRIMERA PARTE: "+parts[0]);
-	        	System.out.println("SEGUNDA PARTE: "+parts[1]);
-	        	if (findFile(parts[1]+".wav",new File(parent))) {
-	        		System.out.println("hemos entrado con: " +name1);
-	        		System.out.println("hemos entrado con: " +new File(name1.getParent()+"\\"+parts[0]+".wav"));
-	        		copyFileUsingFileStreams(name1,new File(name1.getParent()+"\\"+parts[0]+".wav"));
-	        	};
+	        while((br.readLine())!=null) {
+	        	lines++;
 	        }
+
 	      }
 	      catch(FileNotFoundException e){
 	    	  System.out.println("ARCHIVO NO ENCONTRADO");
@@ -70,56 +112,6 @@ public class Read_Data {
 	      }
 	}
 	
-	public void write(String[] options) {
-		try
-        {
-			new File("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\Virtual_Totem").mkdirs();
-            fichero = new FileWriter("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\Virtual_Totem\\Data_Option.txt");
-            pw = new PrintWriter(fichero);
-            
-            for (int x=0; x<options.length; x++) {
-                pw.println(options[x]);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
-        }
-	}
-	
-	/*public void findFile(String txt) {
-		try {
-
-	        final Pattern pattern = Pattern.compile(
-	                "\\A(?=.*" +  txt.replace(";", ")(?=.*") + ").*\\z", 
-	                Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
-	        Files.walkFileTree(Paths.get(parent), new SimpleFileVisitor<Path>() {
-
-	            @Override
-	            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-	                    throws IOException {
-	                String str = new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
-	                if (pattern.matcher(str).matches()) {
-	                    System.out.println("------------ha coincidido: " +txt);
-	                }
-	                return FileVisitResult.CONTINUE;
-	            }
-
-	        });
-
-	    } catch (IOException e) {
-	    	System.out.println("error");
-	    }
-	}*/
-	
 	 public Boolean findFile(String name,File file) throws IOException
 	    {
 		 	boolean exit=false;
@@ -127,14 +119,12 @@ public class Read_Data {
 	        if(list!=null)
 	        for (File fil : list)
 	        {
-	        	//System.out.println("filgetname: "+fil.getName());
 	            if (fil.isDirectory())
 	            {
 	                exit = findFile(name,fil);
 	            }
 	            else if (name.equalsIgnoreCase(fil.getName()))
 	            {
-	                System.out.println("ENCONTRADOOOO: "+fil);
 	                exit = true;
 	                name1=fil;
 	            }
@@ -159,6 +149,4 @@ public class Read_Data {
 		        output.close();
 		    }
 		}
-
-
 }

@@ -1,16 +1,23 @@
 package HandleFiles;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import java.awt.Insets;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 public class Main {
 
@@ -18,6 +25,7 @@ public class Main {
 	private JFileChooser explorador;
 	private File archivo;
 	private String parent_name;
+	private JButton Start_bt;
 
 	/**
 	 * Launch the application.
@@ -40,8 +48,12 @@ public class Main {
 	 */
 	public Main() {
 		initialize();
+		
 	}
-
+	
+	public void activateBtn() {
+		Start_bt.setEnabled(true);
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -51,23 +63,48 @@ public class Main {
 		explorador.setDialogTitle("Abrir documento...");
 		explorador.setFileFilter(new FileNameExtensionFilter("TXT", "txt"));
 		frame = new JFrame();
-		frame.setBounds(100, 100, 350, 154);
+		frame.setTitle("HandleFIles");
+		frame.setBounds(810, 425, 319, 150);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JButton Start_bt = new JButton("Start");
+		Start_bt = new JButton("Start");
+		Start_bt.setFont(new Font("Tahoma", Font.BOLD, 13));
 		Start_bt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				Read_Data data = new Read_Data(Main.this);
 				String ruta = readfile();
-				new Read_Data().read(ruta,parent_name);
+				data.countLines(ruta);
+				data.read(ruta,parent_name);
+				Start_bt.setEnabled(false);
 			}
 		});
-		Start_bt.setBounds(117, 41, 97, 25);
+		Start_bt.setBounds(75, 11, 150, 50);
 		frame.getContentPane().add(Start_bt);
+		
+		JLabel lblNewLabel = new JLabel("Versi\u00F3n DEV");
+		lblNewLabel.setBounds(12, 74, 100, 16);
+		frame.getContentPane().add(lblNewLabel);
+		
+		JButton Info_btn = new JButton("");
+		
+		Info_btn.setBorder(null);
+		Info_btn.setOpaque(false);
+		Info_btn.setBounds(257, 58, 32, 32);
+		Info_btn.setBackground(Color.LIGHT_GRAY);
+		Info_btn.setMargin(new Insets(0, 0, 0, 0));
+		
+		Info_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null,"Created by: Yago Echave-Sustaeta Hernán");
+			}
+		});
+		Info_btn.setIcon(new ImageIcon(Main.class.getResource("/javax/swing/plaf/metal/icons/ocean/info.png")));
+		frame.getContentPane().add(Info_btn);
 	}
 	
-public String readfile() {
+	public String readfile() {
 		
 		explorador.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int seleccion = explorador.showDialog(null, "Abrir!");
@@ -77,12 +114,14 @@ public String readfile() {
 			archivo = explorador.getSelectedFile();
 			parent_name=archivo.getParent();
 			ruta = archivo.getPath();
-			System.out.println(parent_name);
 		 //seleccionó abrir
 		 break;
 
 		default: return null;
 		}
 		return ruta;
+	}
+	public void changebtn(Float num) {
+		Start_bt.setText(num+"%");
 	}
 }
