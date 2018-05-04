@@ -40,12 +40,13 @@ public class Read_Data{
 	     	        br = new BufferedReader(fr);
 	     	        int x=0;
 	     	        String linea;
+	     	        new File(archivo.getParent()+"\\Archivos_Generados").mkdirs();
 	     	        while((linea=br.readLine())!=null) {
 	     	        	String[] parts = linea.split("	");
 	     	        	System.out.println("NOMBRE DEL AUDIO:   "+parts[0]);
 	     	        	System.out.println("ARCHIVO ORIGEN:     "+parts[1]);
 	     	        	if (findFile(parts[1]+".wav",new File(parent))) {
-	     	        		File dest = new File(name1.getParent()+"\\"+parts[0]+".wav");
+	     	        		File dest = new File(name1.getParent()+"\\Archivos_Generados\\"+parts[0]+".wav");
 	     	        		System.out.println("ARCHIVO ENCONTRADO: " +name1);
 	     	        		if(!dest.exists()) {
 	     	        			copyFileUsingFileStreams(name1,dest);
