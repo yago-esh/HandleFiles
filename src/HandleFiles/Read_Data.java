@@ -40,11 +40,17 @@ public class Read_Data{
 	     	        br = new BufferedReader(fr);
 	     	        int x=0;
 	     	        String linea;
-	     	        new File(archivo.getParent()+"\\Archivos_Generados").mkdirs();
+	     	        String[] partsName = archivo.getName().split(".txt");
+	     	        new File(archivo.getParent()+"\\"+partsName[0]+"\\8000\\Archivos_Generados").mkdirs();
 	     	        while((linea=br.readLine())!=null) {
-	     	        	String[] parts = linea.split("	");
+	     	        	String[] parts = linea.split(" ");
 	     	        	System.out.println("NOMBRE DEL AUDIO:   "+parts[0]);
-	     	        	System.out.println("ARCHIVO ORIGEN:     "+parts[1]);
+	     	        	System.out.print("ARCHIVO ORIGEN:     "+parts[1]);
+	     	        	for(int y=2; y<parts.length;y++) {
+	     	        		System.out.print(" "+parts[y]);
+	     	        	}
+	     	        	System.out.println("");
+	     	        	
 	     	        	if (findFile(parts[1]+".wav",new File(parent))) {
 	     	        		File dest = new File(name1.getParent()+"\\Archivos_Generados\\"+parts[0]+".wav");
 	     	        		System.out.println("ARCHIVO ENCONTRADO: " +name1);

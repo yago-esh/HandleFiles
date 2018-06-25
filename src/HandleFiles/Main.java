@@ -63,8 +63,9 @@ public class Main {
 		explorador.setDialogTitle("Abrir documento...");
 		explorador.setFileFilter(new FileNameExtensionFilter("TXT", "txt"));
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.setTitle("HandleFIles");
-		frame.setBounds(810, 425, 319, 150);
+		frame.setBounds(810, 425, 319, 125);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -85,7 +86,7 @@ public class Main {
 		Start_bt.setBounds(75, 11, 150, 50);
 		frame.getContentPane().add(Start_bt);
 		
-		JLabel lblNewLabel = new JLabel("Versi\u00F3n 1.0.7");
+		JLabel lblNewLabel = new JLabel("Versi\u00F3n 1.0.8");
 		lblNewLabel.setBounds(12, 74, 100, 16);
 		frame.getContentPane().add(lblNewLabel);
 		
@@ -114,7 +115,9 @@ public class Main {
 		switch(seleccion) {
 		case JFileChooser.APPROVE_OPTION:
 			archivo = explorador.getSelectedFile();
-			parent_name=archivo.getParent();
+			String[] parts = archivo.getName().split(".txt");
+			parent_name=archivo.getParent()+"\\"+parts[0]+"\\8000";
+			System.out.println("Ruta de busqueda: "+parent_name);
 			ruta = archivo.getPath();
 		 //seleccionó abrir
 		 break;
